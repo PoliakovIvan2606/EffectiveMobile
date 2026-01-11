@@ -14,6 +14,7 @@ FROM alpine AS runner
 COPY --from=builder /usr/local/src/bin/app /
 COPY configs/config.yaml configs/config.yaml
 COPY ./migrations ./migrations
+COPY ./docs ./docs
 EXPOSE 8080
 
 CMD ["./app"]

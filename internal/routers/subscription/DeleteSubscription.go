@@ -8,6 +8,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// DeleteSubscription godoc
+// @Summary      Удалить подписку
+// @Description  Удаляет подписку по ID
+// @Tags         subscriptions
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int    true  "ID подписки"
+// @Success      200  {string}  handler.ApiOkResponse  "OK"
+// @Failure      400  {object}  handler.ApiErrResponse  "Неверный ID или ошибка удаления"
+// @Failure      404  {object}  handler.ApiErrResponse  "Подписка не найдена"
+// @Failure      500  {object}  handler.ApiErrResponse  "Ошибка сервера"
+// @Router       /subscription/{id} [delete]
 func(router SubscriptionRouter) DeleteSubscription(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 

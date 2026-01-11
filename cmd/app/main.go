@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "EffectiveMobile/docs"
 	"EffectiveMobile/internal"
 	"EffectiveMobile/internal/config"
 	"EffectiveMobile/pkg/db"

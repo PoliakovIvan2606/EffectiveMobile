@@ -139,3 +139,39 @@ func (repo *RepositorySubscription) GetTotalCost(ctx context.Context, userID str
 
     return total, nil
 }
+
+func(repo *RepositorySubscription) GetListSubscription(ctx context.Context, UUID string) ([]models.GetSubscription, error) {
+    const op = "repository.subscription.GetListSubscription"
+
+    query := `SELECT id, service_name, price, user_id, start_date, end_date FROM subscription WHERE user_id = $1`
+
+    rows, err := repo.Db.QueryContext(ctx, query, UUID)
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, ErrNoRows
+        }
+        return nil, fmt.Errorf("%s: %w", op, err)
+    }
+    defer rows.Close()
+
+    var subscriptions []models.GetSubscription
+    for rows.Next() {
+        var s models.GetSubscription
+        err := rows.Scan(&s.Id, &s.ServiceName, &s.Price, &s.UserId, &s.StartDate, &s.EndDate)
+        if err != nil {
+            return nil, fmt.Errorf("%s: %w", op, err)
+        }
+        subscriptions = append(subscriptions, s)
+    }
+
+    // Проверка на ошибки после итерации
+    if err = rows.Err(); err != nil {
+        return nil, fmt.Errorf("%s: %w", op, err)
+    }
+
+    if len(subscriptions) == 0 {
+        return nil, ErrNoRows
+    }
+
+    return subscriptions, nil
+}

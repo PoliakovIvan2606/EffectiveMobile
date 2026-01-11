@@ -14,6 +14,7 @@ type UseCaseSubscription interface {
 	UpdateSubscription(ctx context.Context, s *models.SubscriptionRequest, id int) error
 	DeleteSubscription(ctx context.Context, id int) error
 	GetTotalCost(ctx context.Context, userID string, serviceName string, startDate, endDate time.Time) (float64, error)
+	GetListSubscription(ctx context.Context, UUID string) ([]models.SubscriptionResponse, error) 
 }
 
 
@@ -25,6 +26,7 @@ func InitRouter(r *mux.Router, UC UseCaseSubscription) {
 	serviceRouter := SubscriptionRouter{UC: UC}
 	chat := r.PathPrefix("/subscription").Subrouter()
 	chat.HandleFunc("/stats", serviceRouter.GetTotalCost).Methods("GET")
+	chat.HandleFunc("/list/{uuid}", serviceRouter.GetListSubscription).Methods("GET")
 	chat.HandleFunc("/{id}", serviceRouter.GetSubscription).Methods("GET")
 	chat.HandleFunc("", serviceRouter.AddSubscription).Methods("POST")
 	chat.HandleFunc("/{id}", serviceRouter.UpdateSubscription).Methods("PUT")

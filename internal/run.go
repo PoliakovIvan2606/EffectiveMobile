@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/swaggo/http-swagger"
 )
 
 func Run(cfg *config.Config) error {
@@ -27,6 +28,10 @@ func Run(cfg *config.Config) error {
 
 	r.Use(middleware.LoggingMiddleware)
 	r.Use(middleware.RecoverMiddleware)
+
+	r.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+        httpSwagger.URL("/swagger/doc.json"), 
+    ))
 
 	repoSubscription := repository.NewRepositorySubscription(connectDB)
 	usecaseSubscription := usecase.NewUseCaseSubscription(repoSubscription)

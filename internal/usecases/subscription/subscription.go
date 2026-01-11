@@ -2,6 +2,7 @@ package usecase
 
 import (
 	models "EffectiveMobile/internal/models/subscription"
+	"EffectiveMobile/internal/utils"
 	"context"
 	"time"
 )
@@ -12,6 +13,7 @@ type RepositorySubscription interface {
 	UpdateSubscription(ctx context.Context, s *models.Subscription, id int) error
 	DeleteSubscription(ctx context.Context, id int) error
 	GetTotalCost(ctx context.Context, userID string, serviceName string, startDate, endDate time.Time) (float64, error)
+	GetListSubscription(ctx context.Context, UUID string) ([]models.GetSubscription, error)
 }
 
 type UseCaseSubscription struct {
@@ -69,4 +71,24 @@ func(UC *UseCaseSubscription) GetTotalCost(ctx context.Context, userID string, s
 		return 0, err
 	}
 	return totalCost, err
+}
+
+func(UC *UseCaseSubscription) GetListSubscription(ctx context.Context, UUID string) ([]models.SubscriptionResponse, error) {
+	domains, err := UC.repo.GetListSubscription(ctx, UUID)
+	if err != nil {
+		return nil, err
+	}
+
+	var subscriptions []models.SubscriptionResponse
+	for _, sub := range domains {
+		subscriptions = append(subscriptions, models.SubscriptionResponse{
+			Id: sub.Id,
+			ServiceName: sub.ServiceName,
+			Price: sub.Price,
+			StartDate: utils.ParseDate(sub.StartDate),
+			EndDate: utils.ParseDate(sub.EndDate),
+		})
+	}
+
+	return subscriptions, nil
 }

@@ -12,6 +12,16 @@ const (
 	StatusOkResponse
 )
 
+type ApiOkResponse struct {
+    Status  string      `json:"status"`            // "ok" / "error"
+    Data    interface{} `json:"data,omitempty"`
+}
+
+type ApiErrResponse struct {
+    Status  string      `json:"status"`            // "ok" / "error"
+    Err    string `json:"error,omitempty"`
+}
+
 func ErrResponse(w http.ResponseWriter, msg string, err error, http_status int) {
 	slog.Debug(err.Error(), )
 
@@ -24,7 +34,7 @@ func ErrResponse(w http.ResponseWriter, msg string, err error, http_status int) 
 func OkResponse(w http.ResponseWriter, out interface{}, http_status int) {
 	MakeResponse(w, map[string]interface{}{
 		"status": StatusOkResponse,
-		"body": out,
+		"data": out,
 	}, http_status)
 }
 

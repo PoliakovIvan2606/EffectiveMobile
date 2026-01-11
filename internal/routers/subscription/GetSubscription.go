@@ -10,6 +10,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetSubscription godoc
+// @Summary      Получить подписку по ID
+// @Description  Возвращает информацию о подписке по её идентификатору
+// @Tags         subscriptions
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int    true   "ID подписки"
+// @Success      200   {object}  models.SubscriptionResponse   "Данные подписки"
+// @Failure      400   {object}  handler.ApiErrResponse  "Неверный формат ID"
+// @Failure      404   {object}  handler.ApiErrResponse  "Подписка не найдена"
+// @Router       /subscription/{id} [get]
 func(router SubscriptionRouter) GetSubscription(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 

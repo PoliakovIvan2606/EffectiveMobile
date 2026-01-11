@@ -6,6 +6,20 @@ import (
 	"net/http"
 )
 
+// GetTotalCost godoc
+// @Summary      Получить общую стоимость подписок
+// @Description  Возвращает сумму стоимости подписок пользователя за указанный период. Можно указать сервис для фильтрации.
+// @Tags         subscriptions
+// @Accept       json
+// @Produce      json
+// @Param        user_id       query     string  true   "ID пользователя"
+// @Param        service_name  query     string  false  "Название сервиса (необязательный)"
+// @Param        from          query     string  true   "Начало периода (формат ММ-ГГГГ)"
+// @Param        to            query     string  true   "Конец периода (формат ММ-ГГГГ)"
+// @Success      200  {object}  handler.ApiOkResponse  "Общая стоимость"
+// @Failure      400  {object}  handler.ApiErrResponse  "Неверные параметры запроса"
+// @Failure      500  {object}  handler.ApiErrResponse  "Ошибка сервера"
+// @Router       /subscription/stats [get]
 func(router SubscriptionRouter) GetTotalCost(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	
