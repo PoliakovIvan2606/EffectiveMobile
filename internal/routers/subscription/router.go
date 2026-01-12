@@ -25,10 +25,16 @@ type SubscriptionRouter struct {
 func InitRouter(r *mux.Router, UC UseCaseSubscription) {
 	serviceRouter := SubscriptionRouter{UC: UC}
 	chat := r.PathPrefix("/subscription").Subrouter()
+	// Получение общей суммы подписок пользователя
 	chat.HandleFunc("/stats", serviceRouter.GetTotalCost).Methods("GET")
+	// Получение списка подписок пользователя
 	chat.HandleFunc("/list/{uuid}", serviceRouter.GetListSubscription).Methods("GET")
+	// Получение подписки по id
 	chat.HandleFunc("/{id}", serviceRouter.GetSubscription).Methods("GET")
+	// Добавление подписки
 	chat.HandleFunc("", serviceRouter.AddSubscription).Methods("POST")
+	// Обновление подписки
 	chat.HandleFunc("/{id}", serviceRouter.UpdateSubscription).Methods("PUT")
+	// Удаление подписки
 	chat.HandleFunc("/{id}", serviceRouter.DeleteSubscription).Methods("DELETE")
 }

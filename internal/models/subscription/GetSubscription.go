@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Модель для получения подписок из БД
 type GetSubscription struct {
 	Id int
 	ServiceName string
@@ -11,6 +12,7 @@ type GetSubscription struct {
 	EndDate time.Time
 }
 
+// Модель для отправки клиенту моедели
 type SubscriptionResponse struct {
 	Id int `json:"id"`
 	ServiceName string `json:"service_name"`
@@ -20,6 +22,7 @@ type SubscriptionResponse struct {
 	EndDate string `json:"end_date"`
 }
 
+// Метод для получения модели отправки клиенту из модели получения из БД
 func(s *GetSubscription) FromDomain() *SubscriptionResponse {
     return &SubscriptionResponse{
 		Id: 		 s.Id,

@@ -22,15 +22,18 @@ import (
 // @Failure      404   {object}  handler.ApiErrResponse  "Подписка не найдена"
 // @Router       /subscription/{id} [get]
 func(router SubscriptionRouter) GetSubscription(w http.ResponseWriter, r *http.Request) {
+	// получаем переменные из URL
 	vars := mux.Vars(r)
 
     IdStr := vars["id"]
+	// Проверяем правильность пришедшего id
 	id, err := strconv.Atoi(IdStr)
 	if err != nil {
 		handler.ErrResponse(w, "Id должен быть положительным и содержать только цифры", err, http.StatusBadRequest)
 		return
 	}
 
+	// отправляем данные на слой usecase
 	out, err := router.UC.GetSubscription(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, repoSub.ErrNoRows) {
@@ -41,5 +44,6 @@ func(router SubscriptionRouter) GetSubscription(w http.ResponseWriter, r *http.R
 		return
 	}
 
+	// при успешном получении данных отправляем данные подписки
 	handler.OkResponse(w, out, http.StatusOK)
 }

@@ -22,15 +22,18 @@ import (
 // @Failure      404   {object} handler.ApiErrResponse       "Подписки не найдены"
 // @Router       /subscription/list/{uuid} [get]
 func(router SubscriptionRouter) GetListSubscription(w http.ResponseWriter, r *http.Request) {
+	// получаем переменные из URL
 	vars := mux.Vars(r)
 
     UUIDstr := vars["uuid"]
+	// Проверяем валидность uuid
 	_, err := uuid.Parse(UUIDstr)
 	if err != nil {
 		handler.ErrResponse(w, "Не валидный uuid", err, http.StatusBadRequest)
 		return
 	}
 
+	// отправляем данные на слой usecase
 	out, err := router.UC.GetListSubscription(r.Context(), UUIDstr)
 	if err != nil {
 		if errors.Is(err, repoSub.ErrNoRows) {
@@ -41,5 +44,6 @@ func(router SubscriptionRouter) GetListSubscription(w http.ResponseWriter, r *ht
 		return
 	}
 
+	// при успешном получении данных отправляем список полученных попдписок
 	handler.OkResponse(w, out, http.StatusOK)
 }

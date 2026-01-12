@@ -26,6 +26,7 @@ import (
 // @Failure      500           {object}  handler.ApiErrResponse  "Ошибка сервера"
 // @Router       /subscription/{id} [put]
 func(router SubscriptionRouter) UpdateSubscription(w http.ResponseWriter, r *http.Request) {
+	// структура для входных данных
 	in := models.SubscriptionRequest{}
 
 	// Парсим JSON из body в структуру
@@ -34,9 +35,11 @@ func(router SubscriptionRouter) UpdateSubscription(w http.ResponseWriter, r *htt
         return
     }
 
+	// получаем переменные из URL
 	vars := mux.Vars(r)
 
     IdStr := vars["id"]
+	// Проверяем правильность пришедших данных
 	id, err := strconv.Atoi(IdStr)
 	if err != nil {
 		handler.ErrResponse(w, "Id должен быть положительным и содержать только цифры", err, http.StatusBadRequest)
@@ -48,6 +51,7 @@ func(router SubscriptionRouter) UpdateSubscription(w http.ResponseWriter, r *htt
         return
 	}
 
+	// отправляем структуру на слой usecase для дальнейшей работы
 	err = router.UC.UpdateSubscription(r.Context(), &in, id)
 	if err != nil {
 		if errors.Is(err, repoSub.ErrNoRows) {
@@ -59,7 +63,7 @@ func(router SubscriptionRouter) UpdateSubscription(w http.ResponseWriter, r *htt
 	}
 
 
-
+	// при успешном обновлении подписки отправляем пользователю положетельный статус
 	handler.OkResponse(w, "OK", http.StatusCreated)
 }
 

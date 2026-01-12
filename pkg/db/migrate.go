@@ -35,12 +35,11 @@ func RunMigrations(pathDirMigrations, dsn string, maxAttempts int) error {
 		}()
 
 		if lastErr == nil {
-			// всё прошло успешно
 			return nil
 		}
 
 		slog.Warn("migration attempt failed, retrying...", "attempt", i+1, "error", lastErr)
-		time.Sleep(time.Second) // пауза 1 секунда
+		time.Sleep(time.Second)
 	}
 
 	return fmt.Errorf("all migration attempts failed: %w", lastErr)

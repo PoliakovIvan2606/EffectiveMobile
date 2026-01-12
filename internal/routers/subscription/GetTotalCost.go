@@ -21,6 +21,7 @@ import (
 // @Failure      500  {object}  handler.ApiErrResponse  "Ошибка сервера"
 // @Router       /subscription/stats [get]
 func(router SubscriptionRouter) GetTotalCost(w http.ResponseWriter, r *http.Request) {
+	// получаем переменные из URL
 	query := r.URL.Query()
 	
 	userID := query.Get("user_id")
@@ -28,12 +29,11 @@ func(router SubscriptionRouter) GetTotalCost(w http.ResponseWriter, r *http.Requ
 	fromStr := query.Get("from")
 	toStr := query.Get("to")
 
-	// 2. Валидация обязательных полей
+	// Валидация обязательных полей
 	if userID == "" || fromStr == "" || toStr == "" {
 		handler.ErrResponse(w, "Отсутствуют обязательные параметры (user_id, from, to)", nil, http.StatusBadRequest)
 		return
 	}
-
 
 	startDate, err := utils.ValidDate(fromStr)
 	if err != nil {
@@ -47,13 +47,13 @@ func(router SubscriptionRouter) GetTotalCost(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// 4. Вызов бизнес-логики (Use Case / Service)
-	// Передаем контекст для возможности отмены запроса
+	// отправляем данные на слой usecase
 	total, err := router.UC.GetTotalCost(r.Context(), userID, serviceName, *startDate, *endDate)
 	if err != nil {
 		handler.ErrResponse(w, "Ошибка при расчете статистики", err, http.StatusInternalServerError)
 		return
 	}
 
+	// при успешном получении данных отправляем сумму подписок польщователя
 	handler.OkResponse(w, map[string]float64{"total":total}, http.StatusOK)
 }
